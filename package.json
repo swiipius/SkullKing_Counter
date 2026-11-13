@@ -8,7 +8,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "api:dev": "API_KEY=dev-key-local DB_PATH=server/data/dev.db PORT=3000 HOST=127.0.0.1 node --watch server/index.ts"
   },
   "dependencies": {
     "@fontsource-variable/nunito": "^5.3.0",

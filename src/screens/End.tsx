@@ -1,3 +1,4 @@
+import { HonourCard } from '../components/HonourCard';
 import { Chest } from '../components/Icons';
 import { Registre } from '../components/Registre';
 import { SeaScroll } from '../components/SeaScroll';
@@ -45,6 +46,7 @@ export function End({ state, dispatch }: ScreenProps) {
               </div>
             )}
           </div>
+          <HonourCard game={game} onOpenBoard={() => dispatch({ type: 'go', screen: 'leaderboard' })} />
           {rest.map((p) => (
             <div class="rank-row" key={p.index}>
               <span class="rank-row__rank">{p.rank}</span>

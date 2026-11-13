@@ -49,6 +49,45 @@ Change `CREW_CODE` in Vercel and redeploy: every phone is logged out and needs t
 
 Only `/manifest.webmanifest`, `/icon.svg` and `/robots.txt` are public (browsers fetch them without cookies).
 
+## Leaderboard ("Tableau d'honneur")
+
+Top 10 final scores of all games, stored in SQLite by a small API on the Raspberry Pi.
+
+```
+phone ──/api/*──▶ Vercel proxy.ts (crew cookie checked) ──X-Api-Key──▶ skull-api.lordtwin.fr ──▶ Pi :3000 (Docker, SQLite)
+```
+
+- The app sends each finished game (players + 10 rounds of bids and tricks) automatically. Games wait in an outbox on the phone when offline and are sent later; a game is never counted twice.
+- The API recomputes every score from the bids and tricks; the totals sent by the phone are never trusted.
+- Only the Vercel proxy knows the API key, so the API is reachable only through the crew code.
+
+### Run it locally
+
+```bash
+npm run api:dev    # API on http://127.0.0.1:3000, database in server/data/dev.db
+npm run dev        # the app proxies /api to it (key "dev-key-local")
+```
+
+### Deploy on the Pi
+
+```bash
+# on the Pi
+git clone https://github.com/swiipius/SkullKing_Counter.git ~/skullking && cd ~/skullking/server
+cp .env.example .env && echo "API_KEY=$(openssl rand -hex 32)" > .env   # keep this value for Vercel
+mkdir -p data
+docker compose up -d --build
+curl http://127.0.0.1:3000/api/health      # {"ok":true}
+```
+
+Then in Vercel → Settings → Environment Variables (Production), add and redeploy:
+
+| Name | Value |
+|---|---|
+| `LEADERBOARD_API_URL` | `https://skull-api.lordtwin.fr` |
+| `LEADERBOARD_API_KEY` | the `API_KEY` from the Pi's `server/.env` |
+
+Backups: `server/backup.sh` writes a daily copy to `server/data/backups/` (keeps 14); add it to the Pi's crontab (example inside the script).
+
 ## Project layout
 
 ```
@@ -59,6 +98,8 @@ src/game/storage.ts    auto-save in localStorage
 src/screens/           Home, Setup, Deal, Bids, Play, End
 src/components/        score grid, sea-and-anchor scrollbar, dealer dropdown, icons
 public/sw.js           offline cache (service worker)
+src/leaderboard/api.ts leaderboard client: outbox, cache, sending
+server/                leaderboard API (Node + built-in SQLite), Dockerfile, compose, backup
 ```
 
 Saved games keep every round's bids and tricks (not just totals), so the planned leaderboard can re-check scores later.

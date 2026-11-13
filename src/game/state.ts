@@ -9,9 +9,13 @@ import {
   type RoundRecord,
 } from './scoring';
 
-export type Screen = 'home' | 'setup' | 'deal' | 'bids' | 'play' | 'end';
+export type Screen = 'home' | 'setup' | 'deal' | 'bids' | 'play' | 'end' | 'leaderboard';
+
+const GAME_SCREENS: Screen[] = ['deal', 'bids', 'play', 'end'];
 
 export interface Game {
+  /** Unique id, sent with the scores so a retry never counts a game twice. */
+  id?: string;
   players: string[];
   firstDealer: number;
   /** Current round, 1-based. */
@@ -65,8 +69,15 @@ export const defaultName = (index: number) => `Pirate ${index + 1}`;
 
 const zeros = (n: number) => new Array<number>(n).fill(0);
 
+/** Random id; crypto.randomUUID needs HTTPS, so fall back on Math.random over plain HTTP (LAN dev). */
+export function newId(): string {
+  const c = globalThis.crypto;
+  if (c?.randomUUID) return c.randomUUID();
+  return Array.from({ length: 4 }, () => Math.random().toString(36).slice(2, 10)).join('-');
+}
+
 function newGame(players: string[], firstDealer: number): Game {
-  return { players, firstDealer, round: 1, bids: zeros(players.length), tricks: zeros(players.length), history: [] };
+  return { id: newId(), players, firstDealer, round: 1, bids: zeros(players.length), tricks: zeros(players.length), history: [] };
 }
 
 function swap<T>(list: T[], a: number, b: number): T[] {
@@ -82,7 +93,7 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, screen: action.screen };
 
     case 'goHome': {
-      const inGame = state.screen !== 'home' && state.screen !== 'setup';
+      const inGame = GAME_SCREENS.includes(state.screen);
       return { ...state, screen: 'home', resumeScreen: inGame ? state.screen : state.resumeScreen };
     }
 

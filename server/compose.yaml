@@ -1,0 +1,18 @@
+services:
+  leaderboard:
+    build:
+      context: ..
+      dockerfile: server/Dockerfile
+    image: skullking-leaderboard
+    container_name: skullking-leaderboard
+    restart: unless-stopped
+    env_file: .env # API_KEY=... (same value as LEADERBOARD_API_KEY on Vercel)
+    environment:
+      DB_PATH: /data/leaderboard.db
+      PORT: "3000"
+      HOST: 0.0.0.0
+    # IPv4 only: the Pi already has a Next.js server on [::1]:3000.
+    ports:
+      - "0.0.0.0:3000:3000"
+    volumes:
+      - ./data:/data

@@ -71,8 +71,51 @@ export default async function proxy(request: Request) {
   }
 
   const cookie = readCookie(request.headers.get('cookie'), COOKIE);
-  if (cookie && safeEqual(cookie, expected)) return next();
+  const crew = Boolean(cookie && safeEqual(cookie, expected));
+
+  if (url.pathname.startsWith('/api/')) {
+    return crew ? forwardToLeaderboard(request, url) : json(401, { error: 'crew code required' });
+  }
+  if (crew) return next();
   return loginPage(401);
+}
+
+function json(status: number, body: unknown): Response {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+  });
+}
+
+/**
+ * The leaderboard API lives on the Raspberry Pi. Only this proxy knows its key,
+ * so the API is reachable only by phones that passed the crew code.
+ */
+async function forwardToLeaderboard(request: Request, url: URL): Promise<Response> {
+  const base = process.env.LEADERBOARD_API_URL;
+  const key = process.env.LEADERBOARD_API_KEY;
+  if (!base || !key) return json(503, { error: 'leaderboard not configured' });
+
+  const init: RequestInit = {
+    method: request.method,
+    headers: {
+      'Content-Type': request.headers.get('content-type') ?? 'application/json',
+      'X-Api-Key': key,
+      'X-Forwarded-For': request.headers.get('x-forwarded-for') ?? '',
+    },
+    signal: AbortSignal.timeout(8000),
+  };
+  if (request.method !== 'GET' && request.method !== 'HEAD') init.body = await request.arrayBuffer();
+
+  try {
+    const res = await fetch(new URL(url.pathname + url.search, base), init);
+    return new Response(res.body, {
+      status: res.status,
+      headers: { 'Content-Type': res.headers.get('content-type') ?? 'application/json', 'Cache-Control': 'no-store' },
+    });
+  } catch {
+    return json(502, { error: 'leaderboard unreachable' });
+  }
 }
 
 function loginPage(status: number, error?: string): Response {

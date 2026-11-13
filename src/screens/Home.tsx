@@ -1,5 +1,5 @@
 import { Harbour } from '../components/Harbour';
-import { Skull } from '../components/Icons';
+import { Chest, Skull } from '../components/Icons';
 import { isFinished } from '../game/state';
 import type { ScreenProps } from './types';
 
@@ -29,6 +29,10 @@ export function Home({ state, dispatch }: ScreenProps) {
             <small>{resumeLabel}</small>
           </button>
         )}
+        <button type="button" class="btn btn--ghost" onClick={() => dispatch({ type: 'go', screen: 'leaderboard' })}>
+          <Chest size={26} />
+          Tableau d'honneur
+        </button>
       </div>
     </main>
   );

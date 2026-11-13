@@ -4,7 +4,9 @@ import { loadState, saveState } from './game/storage';
 import { Bids } from './screens/Bids';
 import { Deal } from './screens/Deal';
 import { End } from './screens/End';
+import { flushOutbox } from './leaderboard/api';
 import { Home } from './screens/Home';
+import { Leaderboard } from './screens/Leaderboard';
 import { Play } from './screens/Play';
 import { Setup } from './screens/Setup';
 
@@ -30,8 +32,17 @@ export function App() {
     window.scrollTo(0, 0);
   }, [state.screen]);
 
+  // Send any finished game still waiting on this phone, now and whenever the network comes back.
+  useEffect(() => {
+    flushOutbox();
+    const onOnline = () => flushOutbox();
+    window.addEventListener('online', onOnline);
+    return () => window.removeEventListener('online', onOnline);
+  }, []);
+
   const props = { state, dispatch };
-  const screen = state.game ? state.screen : state.screen === 'setup' ? 'setup' : 'home';
+  const needsGame = state.screen === 'deal' || state.screen === 'bids' || state.screen === 'play' || state.screen === 'end';
+  const screen = needsGame && !state.game ? 'home' : state.screen;
 
   return (
     <div class="app" data-screen={screen}>
@@ -41,6 +52,7 @@ export function App() {
       {screen === 'bids' && <Bids {...props} />}
       {screen === 'play' && <Play {...props} />}
       {screen === 'end' && <End {...props} />}
+      {screen === 'leaderboard' && <Leaderboard {...props} />}
     </div>
   );
 }

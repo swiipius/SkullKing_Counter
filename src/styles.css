@@ -466,6 +466,50 @@ button:disabled { cursor: default; }
 .rank-row__rank { width: 28px; font-family: var(--display); font-size: 24px; color: var(--gold); }
 .rank-row__name { flex: 1 1 0; }
 
+/* ---------- leaderboard ---------- */
+.btn--ghost {
+  min-height: 52px; background: transparent; color: var(--lemon);
+  font-size: 18px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .6);
+}
+.honour { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+.honour__row { display: flex; align-items: center; gap: 12px; padding: 6px 14px; border-radius: 14px; border: 2px solid var(--plank); background: rgba(0, 0, 0, .28); }
+.honour__row--top { padding: 10px 14px; background: var(--parch); color: var(--ink); border-color: #8a5a2b; }
+.honour__row--1 { border-color: var(--gold); box-shadow: 0 0 24px rgba(255, 190, 90, .25); }
+.honour__medal {
+  width: 30px; height: 30px; flex: 0 0 30px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--display); font-size: 18px; color: var(--gold);
+}
+.honour__row--top .honour__medal { width: 40px; height: 40px; flex-basis: 40px; font-size: 24px; box-shadow: inset 0 0 0 3px rgba(120, 76, 20, .4); }
+.honour__row--1 .honour__medal { background: radial-gradient(circle at 35% 30%, #ffe39a, var(--gold) 50%, var(--gold-dark)); color: var(--ink); }
+.honour__row--2 .honour__medal { background: #d8cdb8; color: var(--ink); }
+.honour__row--3 .honour__medal { background: #b07a4a; color: #fff4e0; }
+.honour__name { flex: 1 1 0; min-width: 0; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.honour__score { font-size: 16px; font-variant-numeric: tabular-nums; }
+.honour__row--top .honour__name { font-size: 18px; }
+.honour__row--top .honour__score { font-size: 19px; }
+.footer--status { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.led { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+.led--live { background: var(--mint); }
+.led--offline { background: var(--lemon); }
+
+.honour-card {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 14px; border-radius: 16px;
+  background: var(--parch); color: var(--ink); border: 2px solid #8a5a2b;
+}
+.honour-card > div { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+.honour-card strong { font-size: 16px; }
+.honour-card span { font-size: 14px; color: var(--plank); }
+.honour-card svg { flex: 0 0 auto; }
+.honour-card--glory { border-color: var(--gold); box-shadow: 0 0 30px rgba(255, 190, 90, .25); }
+.honour-card--glory strong { font-size: 17px; }
+.honour-card--muted { background: rgba(0, 0, 0, .35); color: var(--parch); border: 2px dashed var(--parch-line); }
+.honour-card--muted span { color: var(--muted); }
+.link-btn { min-height: 44px; padding: 0; border: 0; background: none; color: var(--ink-soft); font-size: 15px; font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
+
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
