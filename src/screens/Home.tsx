@@ -1,4 +1,5 @@
-import { BarrelRow, Skull } from '../components/Icons';
+import { Harbour } from '../components/Harbour';
+import { Skull } from '../components/Icons';
 import { isFinished } from '../game/state';
 import type { ScreenProps } from './types';
 
@@ -11,19 +12,19 @@ export function Home({ state, dispatch }: ScreenProps) {
     : '';
   return (
     <main class="screen home">
+      <Harbour />
       <div class="brand">
-        <Skull size={78} />
+        <Skull size={72} />
         <h1 class="brand__title">Skull King</h1>
         <p class="brand__tagline">Pari, plis et bonbons</p>
       </div>
-      <BarrelRow />
       <div class="spacer" />
-      <div class="stack">
+      <div class="stack home__actions">
         <button type="button" class="btn btn--gold btn--xl" onClick={() => dispatch({ type: 'go', screen: 'setup' })}>
           Nouvelle partie
         </button>
         {game && (
-          <button type="button" class="btn btn--outline btn--xl btn--two-lines" onClick={() => dispatch({ type: 'resume' })}>
+          <button type="button" class="btn btn--outline btn--xl btn--two-lines btn--on-wood" onClick={() => dispatch({ type: 'resume' })}>
             <span>Reprendre la partie</span>
             <small>{resumeLabel}</small>
           </button>

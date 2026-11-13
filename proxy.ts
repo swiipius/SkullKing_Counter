@@ -10,7 +10,14 @@ import { next } from '@vercel/functions';
 const COOKIE = 'sk_crew';
 const ONE_YEAR = 60 * 60 * 24 * 365;
 /** Files the browser fetches without cookies (PWA install), harmless to expose. */
-const PUBLIC_PATHS = new Set(['/manifest.webmanifest', '/icon.svg', '/robots.txt']);
+const PUBLIC_PATHS = new Set([
+  '/manifest.webmanifest',
+  '/icon.svg',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/apple-touch-icon.png',
+  '/robots.txt',
+]);
 
 async function tokenFor(code: string): Promise<string> {
   const data = new TextEncoder().encode(`skullking-crew:${code}`);
