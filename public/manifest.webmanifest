@@ -1,0 +1,15 @@
+{
+  "name": "Skull King – Pari, plis et bonbons",
+  "short_name": "Skull King",
+  "description": "Compteur de points Skull King pour l'équipage.",
+  "lang": "fr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#2b1a11",
+  "theme_color": "#2b1a11",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
