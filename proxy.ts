@@ -42,13 +42,17 @@ function readCookie(header: string | null, name: string): string | undefined {
   return undefined;
 }
 
+/** Reads a Vercel environment variable without depending on Node's type definitions. */
+const env = (name: string): string | undefined =>
+  (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env?.[name];
+
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export default async function proxy(request: Request) {
   const url = new URL(request.url);
   if (PUBLIC_PATHS.has(url.pathname)) return next();
 
-  const code = process.env.CREW_CODE;
+  const code = env('CREW_CODE');
   if (!code) return loginPage(503, "Le code d'équipage n'est pas encore configuré (variable CREW_CODE sur Vercel).");
   const expected = await tokenFor(code);
 
@@ -92,8 +96,8 @@ function json(status: number, body: unknown): Response {
  * so the API is reachable only by phones that passed the crew code.
  */
 async function forwardToLeaderboard(request: Request, url: URL): Promise<Response> {
-  const base = process.env.LEADERBOARD_API_URL;
-  const key = process.env.LEADERBOARD_API_KEY;
+  const base = env('LEADERBOARD_API_URL');
+  const key = env('LEADERBOARD_API_KEY');
   if (!base || !key) return json(503, { error: 'leaderboard not configured' });
 
   const init: RequestInit = {
