@@ -9,8 +9,16 @@ export interface TopEntry {
   score: number;
 }
 
+export interface WinEntry {
+  /** Shared rank when several captains have the same number of wins. */
+  rank: number;
+  name: string;
+  wins: number;
+}
+
 export interface Board {
   top: TopEntry[];
+  wins: WinEntry[];
   games: number;
 }
 
@@ -51,7 +59,31 @@ export function board(db: DatabaseSync): Board {
     .prepare('SELECT name, score FROM scores ORDER BY score DESC, id ASC LIMIT ?')
     .all(TOP_SIZE) as unknown as { name: string; score: number }[];
   const { games } = db.prepare('SELECT COUNT(*) AS games FROM games').get() as { games: number };
-  return { top: rows.map((r, i) => ({ rank: i + 1, name: r.name, score: r.score })), games };
+  return { top: rows.map((r, i) => ({ rank: i + 1, name: r.name, score: r.score })), wins: winsBoard(db), games };
+}
+
+/**
+ * Captains with the most victories. A victory = the best total of a game; a tie for
+ * first gives a victory to each tied player. Names are grouped without case
+ * ("marie" = "Marie") and shown with their latest spelling.
+ */
+export function winsBoard(db: DatabaseSync): WinEntry[] {
+  const rows = db
+    .prepare(
+      `SELECT s.name AS name, COUNT(*) AS wins, MAX(s.id) AS last
+         FROM scores s
+         JOIN (SELECT game_id, MAX(score) AS best FROM scores GROUP BY game_id) b
+           ON b.game_id = s.game_id AND s.score = b.best
+        GROUP BY LOWER(s.name)
+        ORDER BY wins DESC, LOWER(s.name) ASC
+        LIMIT ?`,
+    )
+    .all(TOP_SIZE) as unknown as { name: string; wins: number }[];
+  let rank = 0;
+  return rows.map((r, i) => {
+    if (i === 0 || rows[i - 1].wins !== r.wins) rank = i + 1;
+    return { rank, name: r.name, wins: r.wins };
+  });
 }
 
 function entriesFor(db: DatabaseSync, gameId: string): SubmittedEntry[] {

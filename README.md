@@ -51,7 +51,7 @@ Only `/manifest.webmanifest`, `/icon.svg` and `/robots.txt` are public (browsers
 
 ## Leaderboard ("Tableau d'honneur")
 
-Top 10 final scores of all games, stored in SQLite by a small API on the Raspberry Pi.
+Two boards on one page, stored in SQLite by a small API on the Raspberry Pi: the top 10 final scores, then the captains with the most victories (best total of a game; a tie for first counts for each tied player).
 
 ```
 phone ──/api/*──▶ Vercel proxy.ts (crew cookie checked) ──X-Api-Key──▶ skull-api.lordtwin.fr ──▶ Pi :3000 (Docker, SQLite)

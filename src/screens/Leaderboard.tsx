@@ -4,7 +4,20 @@ import { SeaScroll } from '../components/SeaScroll';
 import { cachedBoard, fetchBoard, flushOutbox, type Board } from '../leaderboard/api';
 import type { ScreenProps } from './types';
 
-const timeFmt = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', hour: '2-digit', minute: '2-digit' });
+function HonourRow({ rank, name, value }: { rank: number; name: string; value: string }) {
+  const tier = rank <= 3 ? `top honour__row--${rank}` : 'rest';
+  return (
+    <li class={`honour__row honour__row--${tier}`}>
+      <span class="honour__medal" aria-label={`${rank === 1 ? '1re' : `${rank}e`} place`}>
+        {rank}
+      </span>
+      <strong class="honour__name">{name}</strong>
+      <strong class="honour__score">{value}</strong>
+    </li>
+  );
+}
+
+const timeFmt =new Intl.DateTimeFormat('fr-FR', { weekday: 'long', hour: '2-digit', minute: '2-digit' });
 
 export function Leaderboard({ dispatch }: ScreenProps) {
   const [board, setBoard] = useState<Board | null>(cachedBoard);
@@ -40,19 +53,31 @@ export function Leaderboard({ dispatch }: ScreenProps) {
             <HomeButton onClick={() => dispatch({ type: 'goHome' })} />
             <h1 class="title title--md">Tableau d'honneur</h1>
           </div>
-          <p class="hint">Les 10 plus beaux butins de l'équipage, toutes parties confondues.</p>
           {board && board.top.length > 0 ? (
-            <ol class="honour">
-              {board.top.map((e) => (
-                <li key={e.rank} class={`honour__row honour__row--${e.rank <= 3 ? `top honour__row--${e.rank}` : 'rest'}`}>
-                  <span class="honour__medal" aria-label={`${e.rank}e place`}>
-                    {e.rank}
-                  </span>
-                  <strong class="honour__name">{e.name}</strong>
-                  <strong class="honour__score">{e.score}</strong>
-                </li>
-              ))}
-            </ol>
+            <>
+              <section class="stack stack--9" aria-labelledby="board-scores">
+                <div>
+                  <h2 id="board-scores" class="title title--sm">Les plus gros butins</h2>
+                  <p class="hint hint--small">Les 10 meilleurs scores, toutes parties confondues.</p>
+                </div>
+                <ol class="honour">
+                  {board.top.map((e, i) => (
+                    <HonourRow key={i} rank={e.rank} name={e.name} value={String(e.score)} />
+                  ))}
+                </ol>
+              </section>
+              <section class="stack stack--9 honour-section" aria-labelledby="board-wins">
+                <div>
+                  <h2 id="board-wins" class="title title--sm">Les plus grands capitaines</h2>
+                  <p class="hint hint--small">Le plus de parties gagnées. Une égalité en tête compte pour chacun.</p>
+                </div>
+                <ol class="honour">
+                  {board.wins.map((e, i) => (
+                    <HonourRow key={i} rank={e.rank} name={e.name} value={`${e.wins} victoire${e.wins > 1 ? 's' : ''}`} />
+                  ))}
+                </ol>
+              </section>
+            </>
           ) : (
             status !== 'loading' && (
               <p class="summary">

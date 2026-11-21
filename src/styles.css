@@ -490,6 +490,7 @@ button:disabled { cursor: default; }
 .honour__score { font-size: 16px; font-variant-numeric: tabular-nums; }
 .honour__row--top .honour__name { font-size: 18px; }
 .honour__row--top .honour__score { font-size: 19px; }
+.honour-section { margin-top: 14px; padding-top: 16px; border-top: 2px dashed var(--plank); }
 .footer--status { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; color: var(--muted); }
 .led { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
 .led--live { background: var(--mint); }

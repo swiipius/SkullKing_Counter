@@ -11,8 +11,16 @@ export interface TopEntry {
   score: number;
 }
 
+export interface WinEntry {
+  rank: number;
+  name: string;
+  wins: number;
+}
+
 export interface Board {
   top: TopEntry[];
+  /** Captains with the most victories (missing in boards cached by older versions). */
+  wins: WinEntry[];
   games: number;
   /** When this board was received (ms since epoch). */
   fetchedAt: number;
@@ -60,10 +68,13 @@ function write(key: string, value: unknown) {
 
 /* ---------- board ---------- */
 
-export const cachedBoard = (): Board | null => read<Board | null>(BOARD, null);
+export const cachedBoard = (): Board | null => {
+  const b = read<Board | null>(BOARD, null);
+  return b ? { ...b, wins: b.wins ?? [] } : null;
+};
 
-function remember(top: TopEntry[], games: number): Board {
-  const b = { top, games, fetchedAt: Date.now() };
+function remember(top: TopEntry[], wins: WinEntry[], games: number): Board {
+  const b = { top, wins, games, fetchedAt: Date.now() };
   write(BOARD, b);
   return b;
 }
@@ -72,8 +83,8 @@ function remember(top: TopEntry[], games: number): Board {
 export async function fetchBoard(): Promise<Board> {
   const res = await fetch('/api/leaderboard', { headers: { Accept: 'application/json' }, cache: 'no-store' });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const data = (await res.json()) as { top: TopEntry[]; games: number };
-  return remember(data.top, data.games);
+  const data = (await res.json()) as { top: TopEntry[]; wins?: WinEntry[]; games: number };
+  return remember(data.top, data.wins ?? [], data.games);
 }
 
 /* ---------- outbox ---------- */
@@ -108,13 +119,14 @@ async function send(game: GameSubmission): Promise<SubmitStatus> {
   if (res.status >= 500 || res.status === 401 || res.status === 429) return { kind: 'offline' };
   const data = (await res.json().catch(() => ({}))) as {
     top?: TopEntry[];
+    wins?: WinEntry[];
     games?: number;
     entries?: SubmittedEntry[];
     error?: string;
   };
   if (!res.ok) return { kind: 'error', message: data.error ?? `HTTP ${res.status}` };
   const top = data.top ?? [];
-  remember(top, data.games ?? 0);
+  remember(top, data.wins ?? [], data.games ?? 0);
   return { kind: 'done', entries: data.entries ?? [], best: top[0]?.score ?? null };
 }
 

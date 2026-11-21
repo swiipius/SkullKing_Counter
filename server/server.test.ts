@@ -89,6 +89,30 @@ describe('database', () => {
     expect(board(db).games).toBe(1);
   });
 
+  it('ranks captains by number of victories', () => {
+    const db = openDb(':memory:');
+    save(db, game('game-4001', ['Marie', 'Hugo'], 0)); // Marie wins
+    save(db, game('game-4002', ['marie', 'Léa'], 0)); // marie wins (same captain)
+    save(db, game('game-4003', ['Hugo', 'Léa'], 1)); // Léa wins
+    const { wins } = board(db);
+    expect(wins).toEqual([
+      { rank: 1, name: 'marie', wins: 2 },
+      { rank: 2, name: 'Léa', wins: 1 },
+    ]);
+  });
+
+  it('gives a victory to every player tied for first, with a shared rank', () => {
+    const db = openDb(':memory:');
+    // Everyone bids 0 and Cléo takes every trick: Ana and Ben both score +550, Cléo −550.
+    const tie = game('game-5001', ['Ana', 'Ben', 'Cléo'], 0);
+    tie.rounds = tie.rounds.map((_, i) => ({ bids: [0, 0, 0], tricks: [0, 0, i + 1] }));
+    save(db, tie);
+    expect(board(db).wins).toEqual([
+      { rank: 1, name: 'Ana', wins: 1 },
+      { rank: 1, name: 'Ben', wins: 1 },
+    ]);
+  });
+
   it('keeps only the 10 best scores and allows the same name twice', () => {
     const db = openDb(':memory:');
     for (let g = 0; g < 7; g++) save(db, game(`game-30${g}0`, ['Marie', 'Hugo'], g % 2));

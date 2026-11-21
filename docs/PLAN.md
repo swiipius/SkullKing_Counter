@@ -158,6 +158,7 @@ Static site, no backend in v1: TypeScript + Vite (+ light framework), localStora
 - Pi: `pierr@192.168.1.153` (Debian 13, arm64, Docker). HTTPS is terminated by a front proxy at 192.168.1.21, which sends `skull-api.lordtwin.fr` to the Pi on **port 3000**.
 - Port 3000 note: the Pi already runs a Next.js server on `[::1]:3000` (IPv6 localhost only), so the API container must publish on IPv4 only (`0.0.0.0:3000`), not on `[::]:3000`.
 - Design approved; built and tested locally (2026-11-13): API in `server/` (Node 26 + built-in SQLite, no dependencies), app screens (home button, leaderboard screen, end-of-game card), offline outbox. The crew code protects the API through the Vercel proxy, which adds a secret `X-Api-Key` (no CORS, no key in the browser).
+- Added 2026-11-21: second board on the same page, under the scores: **most victories** ("Les plus grands capitaines"). A victory = best total of a game; a tie for first counts for each tied player; names grouped case-insensitively; tied captains share a rank.
 - Next: deploy on the Pi (Docker), set `LEADERBOARD_API_URL` / `LEADERBOARD_API_KEY` on Vercel, then push to production.
 
 ## 4. Phase 2 — design (approved)
