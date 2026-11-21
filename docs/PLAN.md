@@ -159,7 +159,9 @@ Static site, no backend in v1: TypeScript + Vite (+ light framework), localStora
 - Port 3000 note: the Pi already runs a Next.js server on `[::1]:3000` (IPv6 localhost only), so the API container must publish on IPv4 only (`0.0.0.0:3000`), not on `[::]:3000`.
 - Design approved; built and tested locally (2026-11-13): API in `server/` (Node 26 + built-in SQLite, no dependencies), app screens (home button, leaderboard screen, end-of-game card), offline outbox. The crew code protects the API through the Vercel proxy, which adds a secret `X-Api-Key` (no CORS, no key in the browser).
 - Added 2026-11-21: second board on the same page, under the scores: **most victories** ("Les plus grands capitaines"). A victory = best total of a game; a tie for first counts for each tied player; names grouped case-insensitively; tied captains share a rank.
-- Next: deploy on the Pi (Docker), set `LEADERBOARD_API_URL` / `LEADERBOARD_API_KEY` on Vercel, then push to production.
+- Deployed on the Pi 2026-11-21: `~/skullking/server`, container `skullking-leaderboard` (healthy), database in `server/data/leaderboard.db`, key in `server/.env` (mode 600). `https://skull-api.lordtwin.fr/api/health` answers publicly; everything else needs the key. Daily backup at 04:15 (cron), 14 copies kept.
+- Next: set `LEADERBOARD_API_URL` / `LEADERBOARD_API_KEY` on Vercel, then push to production.
+- Updating the Pi later: `git archive HEAD | ssh pierr@192.168.1.153 'tar -x -C ~/skullking'` then `docker compose up -d --build` in `~/skullking/server`.
 
 ## 4. Phase 2 — design (approved)
 Design canvas: https://claude.ai/artifact/FoJEyRFMHKZX6N3rEWGsRd (moodboard, wireframes, clickable prototype, all hi-fi screens).
