@@ -1,3 +1,4 @@
+import { navigate } from '../../../shared/router';
 import { Harbour } from '../components/Harbour';
 import { Chest, Skull } from '../components/Icons';
 import { isFinished } from '../game/state';
@@ -13,6 +14,16 @@ export function Home({ state, dispatch }: ScreenProps) {
   return (
     <main class="screen home">
       <Harbour />
+      <a
+        href="/"
+        class="hub-back"
+        onClick={(e) => {
+          e.preventDefault();
+          navigate('/');
+        }}
+      >
+        ‹ Salle de jeux
+      </a>
       <div class="brand">
         <Skull size={72} />
         <h1 class="brand__title">Skull King</h1>

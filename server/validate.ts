@@ -5,7 +5,7 @@ import {
   cardsForRound,
   totals,
   type RoundRecord,
-} from '../src/game/scoring.ts';
+} from '../src/games/skull-king/game/scoring.ts';
 
 export interface GameSubmission {
   id: string;

@@ -5,7 +5,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 # Node runs the TypeScript sources directly (type stripping): no build step.
 RUN echo '{"type":"module"}' > package.json
-COPY src/game/scoring.ts src/game/scoring.ts
+COPY src/games/skull-king/game/scoring.ts src/games/skull-king/game/scoring.ts
 COPY server/index.ts server/db.ts server/validate.ts server/
 RUN mkdir -p /data && chown node:node /data
 USER node

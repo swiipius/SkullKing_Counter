@@ -9,8 +9,10 @@ import { Home } from './screens/Home';
 import { Leaderboard } from './screens/Leaderboard';
 import { Play } from './screens/Play';
 import { Setup } from './screens/Setup';
+import { takeAction } from '../../shared/router';
+import './styles.css';
 
-export function App() {
+export function SkullKingApp() {
   const [state, rawDispatch] = useReducer(reducer, undefined as unknown as AppState, loadState);
 
   // Light haptic tick on score changes (Android; iOS Safari has no vibration API).
@@ -31,6 +33,14 @@ export function App() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [state.screen]);
+
+  // Buttons on the landing page open the game on a given screen (?action=resume|new|leaderboard).
+  useEffect(() => {
+    const action = takeAction();
+    if (action === 'resume') rawDispatch({ type: 'resume' });
+    else if (action === 'new') rawDispatch({ type: 'go', screen: 'setup' });
+    else if (action === 'leaderboard') rawDispatch({ type: 'go', screen: 'leaderboard' });
+  }, []);
 
   // Send any finished game still waiting on this phone, now and whenever the network comes back.
   useEffect(() => {

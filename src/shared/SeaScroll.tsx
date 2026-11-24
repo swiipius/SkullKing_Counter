@@ -1,6 +1,21 @@
 import type { ComponentChildren } from 'preact';
 import { useCallback, useLayoutEffect, useRef, useState } from 'preact/hooks';
-import { ScrollAnchor } from './Icons';
+
+/** Anchor used as the scroll thumb; colour from --sea-anchor (gold by default). */
+function ScrollAnchor({ size = 30 }: { size?: number }) {
+  const paths = (
+    <>
+      <circle cx="12" cy="4" r="2.2" />
+      <path d="M12 6.5v16M4.5 15.5H3a9 8 0 0 0 18 0h-1.5M8 9.5h8" />
+    </>
+  );
+  return (
+    <svg width={size} height={(size * 26) / 24} viewBox="0 0 24 26" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <g stroke="#2a1a10" stroke-width="5">{paths}</g>
+      <g stroke="var(--sea-anchor, #e8b04a)" stroke-width="2.4">{paths}</g>
+    </svg>
+  );
+}
 
 interface Props {
   children: ComponentChildren;

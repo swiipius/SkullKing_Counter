@@ -41,3 +41,20 @@ export function saveState(state: AppState): void {
     /* private mode or storage full: the game still works, it just won't survive a reload */
   }
 }
+
+/** Summary for the landing page card. */
+export function skullKingStatus(): { inProgress: boolean; label: string } {
+  try {
+    const raw = localStorage.getItem(KEY);
+    const s: unknown = raw ? JSON.parse(raw) : null;
+    if (isValid(s) && s.game) {
+      const g = s.game;
+      const n = g.players.length;
+      if (g.history.length >= 10) return { inProgress: true, label: `Partie terminée · ${n} pirates` };
+      return { inProgress: true, label: `Partie en cours · manche ${g.round} · ${n} pirates` };
+    }
+  } catch {
+    /* ignore */
+  }
+  return { inProgress: false, label: 'Aucune partie en cours' };
+}

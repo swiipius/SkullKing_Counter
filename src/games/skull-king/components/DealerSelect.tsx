@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { Chevron } from './Icons';
-import { SeaScroll } from './SeaScroll';
+import { SeaScroll } from '../../../shared/SeaScroll';
 
 interface Props {
   names: string[];

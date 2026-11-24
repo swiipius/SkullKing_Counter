@@ -1,7 +1,7 @@
 import { DealerSelect } from '../components/DealerSelect';
 import { HomeButton } from '../components/Header';
 import { Arrow, Cross } from '../components/Icons';
-import { SeaScroll } from '../components/SeaScroll';
+import { SeaScroll } from '../../../shared/SeaScroll';
 import { MAX_PLAYERS, MIN_PLAYERS } from '../game/scoring';
 import { defaultName, isFinished } from '../game/state';
 import type { ScreenProps } from './types';

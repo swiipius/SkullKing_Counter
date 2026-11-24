@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
 import { HomeButton } from '../components/Header';
-import { SeaScroll } from '../components/SeaScroll';
+import { SeaScroll } from '../../../shared/SeaScroll';
 import { cachedBoard, fetchBoard, flushOutbox, type Board } from '../leaderboard/api';
 import type { ScreenProps } from './types';
 

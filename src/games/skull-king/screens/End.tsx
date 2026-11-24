@@ -1,7 +1,7 @@
 import { HonourCard } from '../components/HonourCard';
 import { Chest } from '../components/Icons';
 import { Registre } from '../components/Registre';
-import { SeaScroll } from '../components/SeaScroll';
+import { SeaScroll } from '../../../shared/SeaScroll';
 import { ranking, type Game } from '../game/state';
 import type { ScreenProps } from './types';
 
