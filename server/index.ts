@@ -1,14 +1,18 @@
 /**
- * Skull King leaderboard API — runs on the Raspberry Pi (Docker), reached only
- * through the Vercel crew-code proxy, which adds the shared X-Api-Key header.
+ * Leaderboard API (Skull King, Flip 7) — runs on the Raspberry Pi (Docker), reached
+ * only through the Vercel crew-code proxy, which adds the shared X-Api-Key header.
  *
- *   GET  /api/health        → { ok: true }            (no key, for monitoring)
- *   GET  /api/leaderboard   → { top, games }
- *   POST /api/games         → { top, games, entries }  (a finished game: players + 10 rounds)
+ *   GET  /api/health                         → { ok: true }   (no key, for monitoring)
+ *   GET  /api/skull-king/leaderboard         → { top, wins, games }
+ *   POST /api/skull-king/games               → { top, wins, games, entries }  (10 rounds of bids + tricks)
+ *   GET  /api/flip-7/leaderboard?target=150  → { top, wins, games }  (target 100, 150 or 200)
+ *   POST /api/flip-7/games                   → { top, wins, games, entries }  (every round's cards)
+ *   GET  /api/leaderboard, POST /api/games   → old Skull King paths, kept for phones with an older app
  */
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { timingSafeEqual } from 'node:crypto';
-import { board, openDb, saveGame } from './db.ts';
+import { SKULL_KING, board, openDb, saveGame } from './db.ts';
+import { validateFlip7 } from './flip7.ts';
 import { validateGame } from './validate.ts';
 
 const PORT = Number(process.env.PORT ?? 3000);
@@ -72,6 +76,20 @@ function rateLimited(req: IncomingMessage): boolean {
   return recent.length > 20;
 }
 
+/** Reads a game submission; answers the error itself and returns undefined when it can't. */
+async function submission(req: IncomingMessage, res: ServerResponse): Promise<unknown> {
+  if (rateLimited(req)) {
+    send(res, 429, { error: 'too many requests' });
+    return undefined;
+  }
+  try {
+    return await readJson(req);
+  } catch (err) {
+    send(res, 400, { error: (err as Error).message });
+    return undefined;
+  }
+}
+
 /* ---------- routes ---------- */
 
 const server = createServer(async (req, res) => {
@@ -82,20 +100,31 @@ const server = createServer(async (req, res) => {
   if (!keyMatches(req.headers['x-api-key'])) return send(res, 401, { error: 'unauthorized' });
 
   try {
-    if (route === 'GET /api/leaderboard') return send(res, 200, board(db));
-
-    if (route === 'POST /api/games') {
-      if (rateLimited(req)) return send(res, 429, { error: 'too many requests' });
-      let body: unknown;
-      try {
-        body = await readJson(req);
-      } catch (err) {
-        return send(res, 400, { error: (err as Error).message });
-      }
+    // Skull King (new paths + the old ones used before the multi-game site)
+    if (route === 'GET /api/skull-king/leaderboard' || route === 'GET /api/leaderboard') return send(res, 200, board(db, SKULL_KING));
+    if (route === 'POST /api/skull-king/games' || route === 'POST /api/games') {
+      const body = await submission(req, res);
+      if (body === undefined) return;
       const check = validateGame(body);
       if (!check.ok) return send(res, 422, { error: check.error });
-      const { created, entries } = saveGame(db, check.game, check.totals);
-      return send(res, created ? 201 : 200, { ...board(db), entries });
+      const { created, entries } = saveGame(db, check.game, check.totals, SKULL_KING);
+      return send(res, created ? 201 : 200, { ...board(db, SKULL_KING), entries });
+    }
+
+    // Flip 7: one board per target (100, 150, 200)
+    if (route === 'GET /api/flip-7/leaderboard') {
+      const target = Number(url.searchParams.get('target') ?? 200);
+      if (![100, 150, 200].includes(target)) return send(res, 400, { error: 'target must be 100, 150 or 200' });
+      return send(res, 200, board(db, { game: 'flip-7', target }));
+    }
+    if (route === 'POST /api/flip-7/games') {
+      const body = await submission(req, res);
+      if (body === undefined) return;
+      const check = validateFlip7(body);
+      if (!check.ok) return send(res, 422, { error: check.error });
+      const key = { game: 'flip-7', target: check.game.target };
+      const { created, entries } = saveGame(db, check.game, check.totals, key);
+      return send(res, created ? 201 : 200, { ...board(db, key), entries });
     }
 
     return send(res, 404, { error: 'not found' });

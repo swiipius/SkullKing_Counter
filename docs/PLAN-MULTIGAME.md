@@ -115,7 +115,9 @@ Node server ──┬─ serves the built app (static files)
 
 ## 4bis. Progress
 - 2026-11-24 — **3a + 3b done locally** (not pushed): code moved to `src/games/skull-king/`, landing page `src/hub/`, path router `src/shared/router.ts`, Flip 7 in `src/games/flip-7/` (rules + game state with tests, players/target, round, card picker, scores, end). Vercel rewrites added so `/flip-7` and `/skull-king` open directly. Working choices: hub title "Salle de jeux", Flip 7 2–12 players, bust = 0, tie at the target = another round, custom target 20–1000.
-- Next: 3c (Flip 7 leaderboards on the Pi), 3d (Docker image + open source).
+- 2026-11-24 — **3c done locally** (not pushed): the API stores `game` + `target` (automatic migration, old rows = Skull King), routes `/api/skull-king/*` and `/api/flip-7/*` (old Skull King paths kept). Flip 7 validator recomputes every round and checks the game ended exactly when someone first reached the target alone. Only 100 / 150 / 200-point games are ranked (decided 2026-11-24); custom targets show "Partie hors classement". Shared leaderboard client in `src/shared/leaderboard.ts`.
+- Deploy order when pushing: update the Pi first (new API), then push (new app).
+- Next: 3d (Docker image + open source).
 
 ## 5. Open questions ❓
 - Leaderboard with variable game length: top scores only from 200-point games, or one board per target, or labelled entries ("150 pts")?

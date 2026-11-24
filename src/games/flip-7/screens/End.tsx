@@ -1,4 +1,7 @@
+import { useEffect, useState } from 'preact/hooks';
+import type { SubmitStatus } from '../../../shared/leaderboard';
 import { navigate } from '../../../shared/router';
+import { client, isRankedTarget, submitGame } from '../leaderboard';
 import { SeaScroll } from '../../../shared/SeaScroll';
 import type { F7Props } from '../App';
 import { ranking, type Game } from '../state';
@@ -57,6 +60,7 @@ export function End({ state, dispatch }: F7Props) {
               <strong>{r.total}</strong>
             </div>
           ))}
+          <HonourCard game={game} onOpen={() => dispatch({ type: 'go', screen: 'leaderboard' })} />
           <span class="f7-caps" style={{ marginTop: '8px' }}>
             Toutes les manches
           </span>
@@ -72,5 +76,76 @@ export function End({ state, dispatch }: F7Props) {
         </button>
       </footer>
     </>
+  );
+}
+
+const ordinal = (n: number) => (n === 1 ? '1re' : `${n}e`);
+
+/** Sends the finished game once (ranked targets only) and shows how the players did. */
+function HonourCard({ game, onOpen }: { game: Game; onOpen: () => void }) {
+  const ranked = isRankedTarget(game.target);
+  const [status, setStatus] = useState<SubmitStatus>(() => client.statusOf(game.id) ?? { kind: 'sending' });
+
+  useEffect(() => {
+    if (!ranked) return;
+    submitGame(game);
+    const refresh = () => client.flushOutbox().then(() => setStatus(client.statusOf(game.id) ?? { kind: 'offline' }));
+    refresh();
+    window.addEventListener('online', refresh);
+    return () => window.removeEventListener('online', refresh);
+  }, [game.id]);
+
+  if (!ranked) {
+    return (
+      <div class="f7-card f7-card--muted" role="status">
+        <strong>Partie hors classement</strong>
+        <span>Seules les parties en 100, 150 ou 200 pts entrent au tableau d'honneur.</span>
+      </div>
+    );
+  }
+  if (status.kind === 'sending') {
+    return (
+      <div class="f7-card f7-card--muted" role="status">
+        <strong>Envoi au tableau d'honneur…</strong>
+      </div>
+    );
+  }
+  if (status.kind === 'offline') {
+    return (
+      <div class="f7-card f7-card--muted" role="status">
+        <strong>Pas de réseau</strong>
+        <span>Les scores partiront tout seuls dès le retour de la connexion.</span>
+      </div>
+    );
+  }
+  if (status.kind === 'error') {
+    return (
+      <div class="f7-card f7-card--muted" role="status">
+        <strong>Scores non enregistrés</strong>
+        <span>Le tableau d'honneur a refusé cette partie ({status.message}).</span>
+      </div>
+    );
+  }
+  const inTop = status.entries.filter((e) => e.inTop).sort((a, b) => a.position - b.position);
+  const title =
+    inTop.length === 0
+      ? 'Scores enregistrés'
+      : inTop.length === 1
+        ? `${inTop[0].name} entre au tableau d'honneur à la ${ordinal(inTop[0].position)} place !`
+        : inTop.length > 3
+          ? `${inTop.length} joueurs entrent au tableau d'honneur, ${inTop[0].name} à la ${ordinal(inTop[0].position)} place !`
+          : `${inTop.map((e) => `${e.name} (${ordinal(e.position)})`).join(', ').replace(/, ([^,]*)$/, ' et $1')} entrent au tableau d'honneur !`;
+  const detail =
+    inTop.length === 0
+      ? `Personne n'entre dans le top 10 en ${game.target} pts.${status.best !== null ? ` Le meilleur à battre : ${status.best}.` : ''}`
+      : `Parties en ${game.target} pts · scores enregistrés.`;
+  return (
+    <div class={`f7-card ${inTop.length === 0 ? 'f7-card--muted' : ''}`} role="status">
+      <strong>{title}</strong>
+      <span>{detail}</span>
+      <button type="button" class="f7-link" onClick={onOpen}>
+        Voir le tableau d'honneur
+      </button>
+    </div>
   );
 }

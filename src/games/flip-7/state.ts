@@ -12,7 +12,7 @@ import {
   type Round,
 } from './rules';
 
-export type Screen = 'setup' | 'round' | 'end';
+export type Screen = 'setup' | 'round' | 'end' | 'leaderboard';
 
 export interface Game {
   id: string;

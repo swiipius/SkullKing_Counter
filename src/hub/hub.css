@@ -67,3 +67,4 @@ body[data-route='hub'] { background: #0d0d10; }
 .hub__foot { margin-top: auto; display: flex; justify-content: center; gap: 10px; font-size: 13px; color: #8b8b96; }
 
 @media (prefers-reduced-motion: reduce) { .hub * { transition: none !important; } }
+.hub-f7__link { color: #ff8cf5; }

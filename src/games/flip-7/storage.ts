@@ -31,7 +31,7 @@ export function loadState(): State {
   try {
     const parsed: unknown = JSON.parse(localStorage.getItem(KEY) ?? 'null');
     if (isValid(parsed)) {
-      if (!parsed.game && parsed.screen !== 'setup') parsed.screen = 'setup';
+      if (!parsed.game && parsed.screen !== 'setup' && parsed.screen !== 'leaderboard') parsed.screen = 'setup';
       return parsed;
     }
   } catch {

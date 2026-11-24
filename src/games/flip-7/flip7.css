@@ -161,3 +161,22 @@ body[data-route='flip-7'] { background: #0b0418; }
 .f7-rest strong { flex: 1 1 0; }
 
 @media (prefers-reduced-motion: reduce) { .f7 * { animation: none !important; transition: none !important; } }
+
+/* leaderboard */
+.f7-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; padding: 4px; border-radius: 14px; background: rgba(255, 255, 255, .08); }
+.f7-tab { height: 40px; border: 0; border-radius: 10px; background: transparent; color: var(--f7-muted); font-size: 14px; font-weight: 800; }
+.f7-tab[aria-selected='true'] { background: var(--f7-gold); color: #3a1d00; font-weight: 900; }
+.f7-honours { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+.f7-honour { display: flex; align-items: center; gap: 12px; padding: 7px 12px; border-radius: 14px; background: var(--f7-glass); border: 1.5px solid var(--f7-line); }
+.f7-honour__medal { width: 28px; height: 28px; flex: 0 0 auto; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Bungee', system-ui, sans-serif; font-size: 15px; color: var(--f7-muted); text-shadow: 0 1px 0 rgba(0, 0, 0, .4); }
+.f7-honour__name { flex: 1 1 0; min-width: 0; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.f7-honour__value { font-size: 15px; font-variant-numeric: tabular-nums; }
+.f7-led { width: 8px; height: 8px; border-radius: 50%; background: var(--f7-muted); }
+.f7-led--live { background: #19e59a; }
+.f7-led--offline { background: #ffcf4d; }
+.f7-card { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; padding: 14px; border-radius: 18px; background: rgba(255, 224, 138, .12); border: 2px solid #ffcf4d; }
+.f7-card strong { font-size: 17px; color: #ffe08a; }
+.f7-card span { font-size: 14px; color: var(--f7-soft); }
+.f7-card--muted { background: rgba(255, 255, 255, .06); border: 2px dashed rgba(201, 184, 255, .45); }
+.f7-card--muted strong { color: #fff; }
+.f7-link { min-height: 44px; padding: 0; border: 0; background: none; color: #ff8cf5; font-size: 15px; font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }

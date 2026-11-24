@@ -51,7 +51,7 @@ Only `/manifest.webmanifest`, `/icon.svg` and `/robots.txt` are public (browsers
 
 ## Leaderboard ("Tableau d'honneur")
 
-Two boards on one page, stored in SQLite by a small API on the Raspberry Pi: the top 10 final scores, then the captains with the most victories (best total of a game; a tie for first counts for each tied player).
+Each game has its own boards, stored in SQLite by a small API on the Raspberry Pi: the top 10 final scores, then the players with the most victories (best total of a game; a tie for first counts for each tied player). Skull King has one board; Flip 7 has one per target (100, 150, 200 pts — custom targets are not ranked).
 
 ```
 phone ──/api/*──▶ Vercel proxy.ts (crew cookie checked) ──X-Api-Key──▶ skull-api.lordtwin.fr ──▶ Pi :3000 (Docker, SQLite)

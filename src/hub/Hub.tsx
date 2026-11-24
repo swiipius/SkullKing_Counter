@@ -60,6 +60,9 @@ export function Hub() {
             Nouvelle partie
           </a>
         </div>
+        <a href="/flip-7?action=leaderboard" class="hub-card__link hub-f7__link" onClick={go('/flip-7?action=leaderboard')}>
+          Tableau d'honneur ›
+        </a>
       </section>
 
       <section class="hub-card hub-card--soon">
