@@ -97,8 +97,13 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, screen: 'home', resumeScreen: inGame ? state.screen : state.resumeScreen };
     }
 
-    case 'resume':
-      return game ? { ...state, screen: state.resumeScreen } : state;
+    case 'resume': {
+      if (!game) return state;
+      // The saved screen is the last game screen the phone showed (bids, play…);
+      // resumeScreen only covers leaving through the Skull King home screen.
+      const screen = GAME_SCREENS.includes(state.screen) ? state.screen : state.resumeScreen;
+      return { ...state, screen };
+    }
 
     case 'crew/rename': {
       const players = crew.players.slice();

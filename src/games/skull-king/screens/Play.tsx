@@ -33,7 +33,7 @@ export function Play({ state, dispatch }: ScreenProps) {
 
   return (
     <>
-      <RoundHeader round={game.round} cards={cards} dealer={game.players[dealer]} onHome={() => dispatch({ type: 'goHome' })}>
+      <RoundHeader round={game.round} cards={cards} dealer={game.players[dealer]}>
         <div class="tricks-progress" aria-live="polite">
           <span>{done ? 'Manche jouée' : `Plis ${played} / ${cards}`}</span>
           <span class="dots" aria-hidden="true">

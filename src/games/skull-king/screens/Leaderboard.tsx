@@ -17,9 +17,9 @@ function HonourRow({ rank, name, value }: { rank: number; name: string; value: s
   );
 }
 
-const timeFmt =new Intl.DateTimeFormat('fr-FR', { weekday: 'long', hour: '2-digit', minute: '2-digit' });
+const timeFmt = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', hour: '2-digit', minute: '2-digit' });
 
-export function Leaderboard({ dispatch }: ScreenProps) {
+export function Leaderboard(_props: ScreenProps) {
   const [board, setBoard] = useState<Board | null>(cachedBoard);
   const [status, setStatus] = useState<'loading' | 'live' | 'offline'>('loading');
 
@@ -50,7 +50,7 @@ export function Leaderboard({ dispatch }: ScreenProps) {
       <div class="screen-body">
         <SeaScroll contentClass="pad stack stack--10">
           <div class="title-row">
-            <HomeButton onClick={() => dispatch({ type: 'goHome' })} />
+            <HomeButton />
             <h1 class="title title--md">Tableau d'honneur</h1>
           </div>
           {board && board.top.length > 0 ? (

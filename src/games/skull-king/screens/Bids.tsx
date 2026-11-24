@@ -18,7 +18,7 @@ export function Bids({ state, dispatch }: ScreenProps) {
 
   return (
     <>
-      <RoundHeader round={game.round} cards={cards} dealer={game.players[dealer]} onHome={() => dispatch({ type: 'goHome' })} />
+      <RoundHeader round={game.round} cards={cards} dealer={game.players[dealer]} />
       <div class="screen-body">
         <SeaScroll contentClass="pad stack stack--9">
           <div>

@@ -22,7 +22,7 @@ export function Setup({ state, dispatch }: ScreenProps) {
       <div class="screen-body">
         <SeaScroll contentClass="pad stack stack--10">
           <div class="title-row">
-            <HomeButton onClick={() => dispatch({ type: 'goHome' })} />
+            <HomeButton />
             <h1 class="title">Votre équipage</h1>
           </div>
           <p class="hint">Inscrivez les pirates dans l'ordre de la table.</p>

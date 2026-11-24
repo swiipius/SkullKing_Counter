@@ -4,18 +4,15 @@ import { navigate } from '../../../shared/router';
 
 /**
  * Back to the "Salle de jeux" landing page (same chevron as in Flip 7).
- * `onClick` runs first so the game remembers where to resume.
+ * The game keeps its current screen saved, so "Reprendre" reopens it there.
  */
-export function HomeButton({ onClick, floating }: { onClick: () => void; floating?: boolean }) {
+export function HomeButton({ floating }: { floating?: boolean }) {
   return (
     <button
       type="button"
       class={`icon-btn ${floating ? 'icon-btn--floating' : ''}`}
       aria-label="Retour à la salle de jeux"
-      onClick={() => {
-        onClick();
-        navigate('/');
-      }}
+      onClick={() => navigate('/')}
     >
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M15 5l-7 7 7 7" />
@@ -28,14 +25,13 @@ interface Props {
   round: number;
   cards: number;
   dealer: string;
-  onHome: () => void;
   children?: ComponentChildren;
 }
 
-export function RoundHeader({ round, cards, dealer, onHome, children }: Props) {
+export function RoundHeader({ round, cards, dealer, children }: Props) {
   return (
     <header class="round-header">
-      <HomeButton onClick={onHome} />
+      <HomeButton />
       <div class="round-header__text">
         <span class="round-header__title">
           Manche {round} / {ROUND_COUNT}

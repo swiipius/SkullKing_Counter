@@ -24,7 +24,7 @@ export function Deal({ state, dispatch }: ScreenProps) {
         </span>
         <span class="deal__hint">Touchez l'écran quand chacun a ses cartes</span>
       </button>
-      <HomeButton floating onClick={() => dispatch({ type: 'goHome' })} />
+      <HomeButton floating />
     </main>
   );
 }

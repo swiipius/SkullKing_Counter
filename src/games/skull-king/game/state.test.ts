@@ -120,6 +120,15 @@ describe('full game', () => {
 });
 
 describe('home / resume', () => {
+  it('resume keeps the game screen the phone was on (bets entered stay)', () => {
+    let s = startedGame();
+    s = run([{ type: 'go', screen: 'bids' }, { type: 'bid/set', index: 0, value: 1 }], s);
+    // Leaving for the landing page does not change the saved screen.
+    s = reducer(s, { type: 'resume' });
+    expect(s.screen).toBe('bids');
+    expect(s.game?.bids[0]).toBe(1);
+  });
+
   it('remembers the screen to resume', () => {
     let s = startedGame();
     s = run([{ type: 'go', screen: 'bids' }, { type: 'goHome' }], s);
