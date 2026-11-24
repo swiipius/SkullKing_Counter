@@ -182,3 +182,20 @@ body[data-route='flip-7'] { background: #0b0418; }
 .f7-card--muted strong { color: #fff; }
 .f7-link { min-height: 44px; padding: 0; border: 0; background: none; color: #ff8cf5; font-size: 15px; font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
 
+
+
+/* scrollbar: colourful foil strip, the thumb is clear glass that makes the colours shine */
+.f7 .sea__track {
+  width: 8px; right: 7px; border-radius: 4px;
+  background:
+    linear-gradient(rgba(20, 7, 46, .55), rgba(20, 7, 46, .55)),
+    linear-gradient(180deg, #ff3b6b 0%, #ff8a00 20%, #ffcf4d 38%, #19e59a 56%, #2f7bff 76%, #ff3df0 100%);
+}
+.f7 .sea__thumb {
+  left: -2px; right: -2px; border-radius: 6px;
+  background: rgba(255, 255, 255, .14);
+  border: 1px solid rgba(255, 255, 255, .7);
+  box-shadow: 0 0 10px rgba(255, 255, 255, .35), inset 0 1px 0 rgba(255, 255, 255, .6);
+  -webkit-backdrop-filter: brightness(2.2) saturate(1.8);
+  backdrop-filter: brightness(2.2) saturate(1.8);
+}

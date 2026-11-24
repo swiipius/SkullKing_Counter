@@ -13,6 +13,7 @@
 /* Wider invisible grab area so the thumb is easy to drag with a finger. */
 .sea__track::before { content: ''; position: absolute; top: 0; bottom: 0; left: -16px; right: -8px; }
 .sea__thumb { position: absolute; left: 0; right: 0; display: block; pointer-events: none; border-radius: 3px; background: var(--sea-thumb, #e8b04a); }
+.sea__fill { position: absolute; top: 0; left: 0; right: 0; display: none; pointer-events: none; border-radius: inherit; }
 
 .sea--small { position: relative; inset: auto; }
 .sea--small .sea__scroller { height: auto; }

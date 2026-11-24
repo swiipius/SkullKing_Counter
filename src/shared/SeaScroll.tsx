@@ -15,10 +15,11 @@ interface Props {
 }
 
 /**
- * Scroll area with a slim, discreet scrollbar. Like a normal scrollbar, the thumb
- * is as long as the visible part of the page: the shorter the page, the bigger
- * the thumb. Colours come from --sea-track and --sea-thumb so each game sets its
- * own. Native scrolling (touch, wheel, keyboard) still works; the thumb can be dragged.
+ * Scroll area with a slim scrollbar. Like a normal scrollbar, the thumb is as long
+ * as the visible part of the page: the shorter the page, the bigger the thumb.
+ * It renders a track, a fill (top → bottom of the visible window) and a thumb;
+ * each game styles them in its own CSS. Native scrolling (touch, wheel, keyboard)
+ * still works; the thumb can be dragged.
  */
 export function SeaScroll({ children, contentClass, small, maxHeight, role, labelledBy }: Props) {
   const scroller = useRef<HTMLDivElement>(null);
@@ -90,8 +91,9 @@ export function SeaScroll({ children, contentClass, small, maxHeight, role, labe
       </div>
       {state.can && (
         <div ref={track} class="sea__track" aria-hidden="true" onPointerDown={onPointerDown} onPointerMove={onPointerMove}>
-          <span ref={handle} class="sea__thumb" style={{ height: length, top: `calc((100% - ${length}) * ${state.pct.toFixed(4)})` }}>
-          </span>
+          {/* Fill from the top down to the bottom of the visible window: games can show it (Skull King's rising tide). */}
+          <span class="sea__fill" style={{ height: `calc((100% - ${length}) * ${state.pct.toFixed(4)} + ${length})` }} />
+          <span ref={handle} class="sea__thumb" style={{ height: length, top: `calc((100% - ${length}) * ${state.pct.toFixed(4)})` }} />
         </div>
       )}
     </div>
