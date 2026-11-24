@@ -1,0 +1,32 @@
+/* Shared scroll area (SeaScroll). The thumb length follows the visible part of the page. */
+.sea { position: absolute; inset: 0; }
+.sea__scroller { height: 100%; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.sea__scroller::-webkit-scrollbar { display: none; }
+.sea__track {
+  position: absolute; top: 10px; bottom: 10px; right: 6px; width: 16px;
+  border-radius: 8px;
+  touch-action: none;
+  cursor: grab;
+  background-color: #0f3d55;
+  background-image:
+    repeating-linear-gradient(180deg, rgba(140, 215, 235, 0) 0 7px, rgba(140, 215, 235, .45) 7px 9px, rgba(140, 215, 235, 0) 9px 16px),
+    linear-gradient(180deg, #2385a6, #0b2c42);
+  box-shadow: inset 0 0 0 2px #5a3a24;
+}
+/* Wider invisible grab area so the thumb is easy to drag with a thumb. */
+.sea__track::before { content: ''; position: absolute; top: 0; bottom: 0; left: -14px; right: -6px; }
+.sea__thumb { position: absolute; left: 0; right: 0; display: block; pointer-events: none; }
+
+/* Default thumb (Skull King): a brass bar on the sea, with the anchor in its middle. */
+.sea__bar {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #a8741f, #f2c766 45%, #e8b04a 60%, #a8741f);
+  box-shadow: inset 0 0 0 2px #2a1a10;
+}
+.sea__bar svg { flex: 0 0 auto; }
+
+.sea--small { position: relative; inset: auto; }
+.sea--small .sea__scroller { height: auto; }
+.sea--small .sea__track { top: 6px; bottom: 6px; right: 5px; width: 12px; border-radius: 6px; box-shadow: inset 0 0 0 2px #8a5a2b; }
+.sea--small .sea__bar { border-radius: 6px; }

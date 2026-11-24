@@ -192,9 +192,10 @@ body[data-route='flip-7'] { background: #0b0418; }
     rgba(127, 176, 255, .45) 24px 30px, rgba(255, 255, 255, .06) 30px 36px);
   box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .22);
 }
-.f7-thumb { display: block; width: 22px; height: 36px; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .6)); }
+.f7-thumb { position: absolute; inset: 0 -5px; display: block; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .6)); }
+/* A wrapped candy that stretches with the visible part of the page: twisted ends keep their size. */
 .f7-thumb__candy {
   display: block; width: 100%; height: 100%;
-  background: var(--f7-gold);
-  clip-path: polygon(18% 0%, 32% 17%, 6% 17%, 6% 83%, 32% 83%, 18% 100%, 82% 100%, 68% 83%, 94% 83%, 94% 17%, 68% 17%, 82% 0%);
+  background: linear-gradient(90deg, #8a5200 0%, #ffcf4d 30%, #ffe08a 50%, #f2b200 70%, #a66a00 100%);
+  clip-path: polygon(20% 0, 36% 9px, 8% 9px, 8% calc(100% - 9px), 36% calc(100% - 9px), 20% 100%, 80% 100%, 64% calc(100% - 9px), 92% calc(100% - 9px), 92% 9px, 64% 9px, 80% 0);
 }

@@ -1,5 +1,6 @@
 import type { ComponentChildren } from 'preact';
 import { useCallback, useLayoutEffect, useRef, useState } from 'preact/hooks';
+import './sea-scroll.css';
 
 /** Anchor used as the scroll thumb; colour from --sea-anchor (gold by default). */
 function ScrollAnchor({ size = 30 }: { size?: number }) {
@@ -34,13 +35,17 @@ interface Props {
 
 /**
  * Scroll area whose scrollbar is a strip of sea with an anchor as the thumb.
- * Native scrolling (touch, wheel, keyboard) still works; the anchor can also be dragged.
+ * Like a normal scrollbar, the thumb is as long as the visible part of the page:
+ * the shorter the page, the bigger the thumb. Native scrolling (touch, wheel,
+ * keyboard) still works, and the thumb can be dragged.
  */
 export function SeaScroll({ children, contentClass, small, maxHeight, role, labelledBy, thumb, trackClass }: Props) {
   const scroller = useRef<HTMLDivElement>(null);
   const content = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
-  const [state, setState] = useState({ can: false, pct: 0 });
+  const handle = useRef<HTMLSpanElement>(null);
+  const grab = useRef(0);
+  const [state, setState] = useState({ can: false, pct: 0, size: 1 });
 
   const measure = useCallback(() => {
     const el = scroller.current;
@@ -48,7 +53,10 @@ export function SeaScroll({ children, contentClass, small, maxHeight, role, labe
     const max = el.scrollHeight - el.clientHeight;
     const can = max > 2;
     const pct = can ? Math.min(1, Math.max(0, el.scrollTop / max)) : 0;
-    setState((prev) => (prev.can === can && Math.abs(prev.pct - pct) < 0.001 ? prev : { can, pct }));
+    const size = can ? el.clientHeight / el.scrollHeight : 1;
+    setState((prev) =>
+      prev.can === can && Math.abs(prev.pct - pct) < 0.001 && Math.abs(prev.size - size) < 0.001 ? prev : { can, pct, size },
+    );
   }, []);
 
   useLayoutEffect(() => {
@@ -59,25 +67,32 @@ export function SeaScroll({ children, contentClass, small, maxHeight, role, labe
     return () => ro.disconnect();
   }, [measure]);
 
+  /** Moves the page so the thumb's top sits at the pointer minus where it was grabbed. */
   const scrollToPointer = (clientY: number) => {
     const el = scroller.current;
     const t = track.current;
-    if (!el || !t) return;
-    const rect = t.getBoundingClientRect();
-    const ratio = Math.min(1, Math.max(0, (clientY - rect.top) / rect.height));
+    const h = handle.current;
+    if (!el || !t || !h) return;
+    const tr = t.getBoundingClientRect();
+    const room = tr.height - h.getBoundingClientRect().height;
+    const ratio = room > 0 ? Math.min(1, Math.max(0, (clientY - tr.top - grab.current) / room)) : 0;
     el.scrollTop = ratio * (el.scrollHeight - el.clientHeight);
   };
 
   const onPointerDown = (e: PointerEvent) => {
     e.preventDefault();
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    const hr = handle.current?.getBoundingClientRect();
+    // Grabbing the thumb keeps it under the finger; tapping the track centres it there.
+    grab.current = hr && e.clientY >= hr.top && e.clientY <= hr.bottom ? e.clientY - hr.top : (hr?.height ?? 0) / 2;
     scrollToPointer(e.clientY);
   };
   const onPointerMove = (e: PointerEvent) => {
     if ((e.currentTarget as HTMLElement).hasPointerCapture(e.pointerId)) scrollToPointer(e.clientY);
   };
 
-  const pct = `${(state.pct * 100).toFixed(1)}%`;
+  const min = small ? 28 : 40;
+  const length = `max(${min}px, ${(state.size * 100).toFixed(2)}%)`;
   return (
     <div class={`sea ${small ? 'sea--small' : ''}`}>
       <div
@@ -94,8 +109,12 @@ export function SeaScroll({ children, contentClass, small, maxHeight, role, labe
       </div>
       {state.can && (
         <div ref={track} class={`sea__track ${trackClass ?? ''}`} aria-hidden="true" onPointerDown={onPointerDown} onPointerMove={onPointerMove}>
-          <span class="sea__anchor" style={{ top: pct, transform: `translate(-50%, -${pct})` }}>
-            {thumb ?? <ScrollAnchor size={small ? 22 : 30} />}
+          <span ref={handle} class="sea__thumb" style={{ height: length, top: `calc((100% - ${length}) * ${state.pct.toFixed(4)})` }}>
+            {thumb ?? (
+              <span class="sea__bar">
+                <ScrollAnchor size={small ? 20 : 26} />
+              </span>
+            )}
           </span>
         </div>
       )}
