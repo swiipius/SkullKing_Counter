@@ -5,6 +5,7 @@ set -eu
 cd "$(dirname "$0")"
 mkdir -p data/backups
 stamp=$(date +%Y-%m-%d)
+rm -f "data/backups/leaderboard-$stamp.db" # a second run the same day replaces that day's copy
 docker compose exec -T leaderboard node -e "
   const { DatabaseSync } = require('node:sqlite');
   new DatabaseSync('/data/leaderboard.db').exec(\"VACUUM INTO '/data/backups/leaderboard-$stamp.db'\");
