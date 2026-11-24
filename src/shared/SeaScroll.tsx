@@ -2,21 +2,6 @@ import type { ComponentChildren } from 'preact';
 import { useCallback, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import './sea-scroll.css';
 
-/** Anchor used as the scroll thumb; colour from --sea-anchor (gold by default). */
-function ScrollAnchor({ size = 30 }: { size?: number }) {
-  const paths = (
-    <>
-      <circle cx="12" cy="4" r="2.2" />
-      <path d="M12 6.5v16M4.5 15.5H3a9 8 0 0 0 18 0h-1.5M8 9.5h8" />
-    </>
-  );
-  return (
-    <svg width={size} height={(size * 26) / 24} viewBox="0 0 24 26" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <g stroke="#2a1a10" stroke-width="5">{paths}</g>
-      <g stroke="var(--sea-anchor, #e8b04a)" stroke-width="2.4">{paths}</g>
-    </svg>
-  );
-}
 
 interface Props {
   children: ComponentChildren;
@@ -24,22 +9,18 @@ interface Props {
   contentClass?: string;
   /** Smaller track, for menus. */
   small?: boolean;
-  /** Custom thumb (default: the Skull King anchor). */
-  thumb?: ComponentChildren;
-  /** Extra class on the track, so each game can restyle it. */
-  trackClass?: string;
   maxHeight?: number;
   role?: 'listbox';
   labelledBy?: string;
 }
 
 /**
- * Scroll area whose scrollbar is a strip of sea with an anchor as the thumb.
- * Like a normal scrollbar, the thumb is as long as the visible part of the page:
- * the shorter the page, the bigger the thumb. Native scrolling (touch, wheel,
- * keyboard) still works, and the thumb can be dragged.
+ * Scroll area with a slim, discreet scrollbar. Like a normal scrollbar, the thumb
+ * is as long as the visible part of the page: the shorter the page, the bigger
+ * the thumb. Colours come from --sea-track and --sea-thumb so each game sets its
+ * own. Native scrolling (touch, wheel, keyboard) still works; the thumb can be dragged.
  */
-export function SeaScroll({ children, contentClass, small, maxHeight, role, labelledBy, thumb, trackClass }: Props) {
+export function SeaScroll({ children, contentClass, small, maxHeight, role, labelledBy }: Props) {
   const scroller = useRef<HTMLDivElement>(null);
   const content = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
@@ -91,7 +72,7 @@ export function SeaScroll({ children, contentClass, small, maxHeight, role, labe
     if ((e.currentTarget as HTMLElement).hasPointerCapture(e.pointerId)) scrollToPointer(e.clientY);
   };
 
-  const min = small ? 28 : 40;
+  const min = small ? 24 : 36;
   const length = `max(${min}px, ${(state.size * 100).toFixed(2)}%)`;
   return (
     <div class={`sea ${small ? 'sea--small' : ''}`}>
@@ -108,13 +89,8 @@ export function SeaScroll({ children, contentClass, small, maxHeight, role, labe
         </div>
       </div>
       {state.can && (
-        <div ref={track} class={`sea__track ${trackClass ?? ''}`} aria-hidden="true" onPointerDown={onPointerDown} onPointerMove={onPointerMove}>
+        <div ref={track} class="sea__track" aria-hidden="true" onPointerDown={onPointerDown} onPointerMove={onPointerMove}>
           <span ref={handle} class="sea__thumb" style={{ height: length, top: `calc((100% - ${length}) * ${state.pct.toFixed(4)})` }}>
-            {thumb ?? (
-              <span class="sea__bar">
-                <ScrollAnchor size={small ? 20 : 26} />
-              </span>
-            )}
           </span>
         </div>
       )}

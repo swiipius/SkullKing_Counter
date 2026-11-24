@@ -16,31 +16,6 @@ export function Skull({ size = 80, label }: SvgProps) {
   );
 }
 
-export function AnchorIcon({ size = 22 }: SvgProps) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <circle cx="12" cy="5" r="2" />
-      <path d="M12 7v14M5 13H3a9 8 0 0 0 18 0h-2M8 10h8" />
-    </svg>
-  );
-}
-
-/** Gold anchor with a dark outline, used as the scroll thumb. */
-export function ScrollAnchor({ size = 30 }: SvgProps) {
-  const paths = (
-    <>
-      <circle cx="12" cy="4" r="2.2" />
-      <path d="M12 6.5v16M4.5 15.5H3a9 8 0 0 0 18 0h-1.5M8 9.5h8" />
-    </>
-  );
-  return (
-    <svg width={size} height={(size * 26) / 24} viewBox="0 0 24 26" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <g stroke="#2a1a10" stroke-width="5">{paths}</g>
-      <g stroke="var(--gold)" stroke-width="2.4">{paths}</g>
-    </svg>
-  );
-}
-
 export function Chevron({ size = 18, up = false }: SvgProps & { up?: boolean }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style={{ transform: up ? 'rotate(180deg)' : undefined, transition: 'transform .15s' }}>

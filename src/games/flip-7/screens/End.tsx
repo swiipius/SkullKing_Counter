@@ -2,7 +2,7 @@ import { useEffect, useState } from 'preact/hooks';
 import type { SubmitStatus } from '../../../shared/leaderboard';
 import { navigate } from '../../../shared/router';
 import { client, isRankedTarget, submitGame } from '../leaderboard';
-import { CandyScroll } from '../CandyScroll';
+import { SeaScroll } from '../../../shared/SeaScroll';
 import type { F7Props } from '../App';
 import { ranking, type Game } from '../state';
 import { ScoreGrid } from './ScoreGrid';
@@ -29,7 +29,7 @@ export function End({ state, dispatch }: F7Props) {
         </div>
       </header>
       <div class="f7-body">
-        <CandyScroll contentClass="f7-pad">
+        <SeaScroll contentClass="f7-pad">
           <div class="f7-end-title">
             <span class="f7-hint" style={{ fontWeight: 800, color: 'var(--f7-soft)' }}>
               Manche {game.history.length} · objectif {game.target} pts atteint
@@ -65,7 +65,7 @@ export function End({ state, dispatch }: F7Props) {
             Toutes les manches
           </span>
           <ScoreGrid game={game} />
-        </CandyScroll>
+        </SeaScroll>
       </div>
       <footer class="f7-footer">
         <button type="button" class="f7-btn f7-btn--ghost f7-btn--grow" onClick={() => dispatch({ type: 'go', screen: 'setup' })}>
