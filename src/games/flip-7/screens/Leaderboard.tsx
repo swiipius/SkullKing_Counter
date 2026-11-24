@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
 import { navigate } from '../../../shared/router';
-import { SeaScroll } from '../../../shared/SeaScroll';
+import { CandyScroll } from '../CandyScroll';
 import type { Board } from '../../../shared/leaderboard';
 import type { F7Props } from '../App';
 import { client, isRankedTarget } from '../leaderboard';
@@ -72,7 +72,7 @@ export function Leaderboard({ state, dispatch, fromHub }: F7Props & { fromHub: b
         </div>
       </header>
       <div class="f7-body">
-        <SeaScroll contentClass="f7-pad">
+        <CandyScroll contentClass="f7-pad">
           <div class="f7-tabs" role="tablist" aria-label="Longueur de partie">
             {TARGET_PRESETS.map((t) => (
               <button key={t} type="button" role="tab" aria-selected={t === target} class="f7-tab" onClick={() => setTarget(t)}>
@@ -105,7 +105,7 @@ export function Leaderboard({ state, dispatch, fromHub }: F7Props & { fromHub: b
             )
           )}
           <p class="f7-hint">Seules les parties en 100, 150 ou 200 pts sont classées.</p>
-        </SeaScroll>
+        </CandyScroll>
       </div>
       <footer class="f7-footer" style={{ justifyContent: 'center', gap: '8px', fontSize: '13px', color: 'var(--f7-muted)' }}>
         <span class={`f7-led f7-led--${status}`} aria-hidden="true" />

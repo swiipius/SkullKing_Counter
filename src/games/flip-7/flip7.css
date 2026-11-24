@@ -180,3 +180,21 @@ body[data-route='flip-7'] { background: #0b0418; }
 .f7-card--muted { background: rgba(255, 255, 255, .06); border: 2px dashed rgba(201, 184, 255, .45); }
 .f7-card--muted strong { color: #fff; }
 .f7-link { min-height: 44px; padding: 0; border: 0; background: none; color: #ff8cf5; font-size: 15px; font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
+
+/* scrollbar: gold foil candy on a candy-stripe track (replaces the Skull King anchor) */
+.sea__track.f7-track {
+  width: 12px;
+  right: 7px;
+  border-radius: 6px;
+  background: repeating-linear-gradient(180deg,
+    rgba(255, 61, 240, .45) 0 6px, rgba(255, 255, 255, .06) 6px 12px,
+    rgba(25, 229, 154, .45) 12px 18px, rgba(255, 255, 255, .06) 18px 24px,
+    rgba(127, 176, 255, .45) 24px 30px, rgba(255, 255, 255, .06) 30px 36px);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .22);
+}
+.f7-thumb { display: block; width: 22px; height: 36px; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .6)); }
+.f7-thumb__candy {
+  display: block; width: 100%; height: 100%;
+  background: var(--f7-gold);
+  clip-path: polygon(18% 0%, 32% 17%, 6% 17%, 6% 83%, 32% 83%, 18% 100%, 82% 100%, 68% 83%, 94% 83%, 94% 17%, 68% 17%, 82% 0%);
+}

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { navigate } from '../../../shared/router';
-import { SeaScroll } from '../../../shared/SeaScroll';
+import { CandyScroll } from '../CandyScroll';
 import type { F7Props } from '../App';
 import { numberFoil, playerFoil } from '../foil';
 import {
@@ -46,7 +46,7 @@ export function RoundScreen({ state, dispatch }: F7Props) {
       </header>
 
       <div class="f7-body">
-        <SeaScroll contentClass="f7-pad">
+        <CandyScroll contentClass="f7-pad">
           {game.players.map((name, i) => {
             const h = game.hands[i];
             const pts = h ? handScore(h) : 0;
@@ -73,7 +73,7 @@ export function RoundScreen({ state, dispatch }: F7Props) {
             );
           })}
           <p class="f7-hint">Touchez un joueur pour saisir les cartes qu'il garde à la fin de la manche.</p>
-        </SeaScroll>
+        </CandyScroll>
       </div>
 
       <footer class="f7-footer">

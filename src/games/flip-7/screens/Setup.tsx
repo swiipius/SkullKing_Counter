@@ -1,6 +1,6 @@
 import { useState } from 'preact/hooks';
 import { navigate } from '../../../shared/router';
-import { SeaScroll } from '../../../shared/SeaScroll';
+import { CandyScroll } from '../CandyScroll';
 import { MAX_PLAYERS, MIN_PLAYERS, MAX_TARGET, MIN_TARGET, OFFICIAL_TARGET, TARGET_PRESETS } from '../rules';
 import { defaultName } from '../state';
 import type { F7Props } from '../App';
@@ -32,7 +32,7 @@ export function Setup({ state, dispatch }: F7Props) {
         </div>
       </header>
       <div class="f7-body">
-        <SeaScroll contentClass="f7-pad">
+        <CandyScroll contentClass="f7-pad">
           <span class="f7-label" style={{ marginTop: 0 }}>
             LES JOUEURS
           </span>
@@ -121,7 +121,7 @@ export function Setup({ state, dispatch }: F7Props) {
           <p class="f7-hint">
             {state.target === OFFICIAL_TARGET ? 'Règle officielle : ' : ''}environ {Math.max(2, Math.round(state.target / 30))} à {Math.max(3, Math.round(state.target / 18))} manches.
           </p>
-        </SeaScroll>
+        </CandyScroll>
       </div>
       <footer class="f7-footer">
         <button type="button" class="f7-btn f7-btn--gold f7-btn--grow" onClick={start}>

@@ -23,6 +23,10 @@ interface Props {
   contentClass?: string;
   /** Smaller track, for menus. */
   small?: boolean;
+  /** Custom thumb (default: the Skull King anchor). */
+  thumb?: ComponentChildren;
+  /** Extra class on the track, so each game can restyle it. */
+  trackClass?: string;
   maxHeight?: number;
   role?: 'listbox';
   labelledBy?: string;
@@ -32,7 +36,7 @@ interface Props {
  * Scroll area whose scrollbar is a strip of sea with an anchor as the thumb.
  * Native scrolling (touch, wheel, keyboard) still works; the anchor can also be dragged.
  */
-export function SeaScroll({ children, contentClass, small, maxHeight, role, labelledBy }: Props) {
+export function SeaScroll({ children, contentClass, small, maxHeight, role, labelledBy, thumb, trackClass }: Props) {
   const scroller = useRef<HTMLDivElement>(null);
   const content = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
@@ -89,9 +93,9 @@ export function SeaScroll({ children, contentClass, small, maxHeight, role, labe
         </div>
       </div>
       {state.can && (
-        <div ref={track} class="sea__track" aria-hidden="true" onPointerDown={onPointerDown} onPointerMove={onPointerMove}>
+        <div ref={track} class={`sea__track ${trackClass ?? ''}`} aria-hidden="true" onPointerDown={onPointerDown} onPointerMove={onPointerMove}>
           <span class="sea__anchor" style={{ top: pct, transform: `translate(-50%, -${pct})` }}>
-            <ScrollAnchor size={small ? 22 : 30} />
+            {thumb ?? <ScrollAnchor size={small ? 22 : 30} />}
           </span>
         </div>
       )}
